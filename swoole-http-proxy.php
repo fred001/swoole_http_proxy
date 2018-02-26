@@ -10,8 +10,7 @@
    {
       $msg=sprintf("[%s] %s\n",now(),$msg);
 
-      #openlog("swoole_proxy_http", LOG_PID | LOG_PERROR, LOG_LOCAL0);
-      echo $msg;
+      openlog("swoole_proxy_http", LOG_PID | LOG_PERROR ,LOG_LOCAL0);
       syslog(LOG_INFO,$msg);
    }
 
@@ -82,6 +81,7 @@
          }
       }
 
+      var_dump('response');
       debug(json_encode($debug_data));
 
       $resp->end($cli->body);
@@ -159,6 +159,7 @@
 
          self::$redis= $redis;
 
+         save_log("start");
          self::$serv->start();
       }
 
@@ -183,7 +184,6 @@
                self::$backendCloseCount++;
                unset(HttpProxyServer::$backends[$cli->sock]);
                unset(HttpProxyServer::$frontends[$fd]);
-               //save_log(self::$backendCloseCount . "\tbackend[{$cli->sock}]#[{$fd}] close");
             });
          }
          return HttpProxyServer::$frontends[$fd];
@@ -205,6 +205,8 @@
          unset(HttpProxyServer::$backends[$backend_socket->sock]);
          unset(HttpProxyServer::$frontends[$fd]);
       }
+
+      //save_log("close");
    });
 
    $serv->on('Request', function (swoole_http_request $req, swoole_http_response $resp)
