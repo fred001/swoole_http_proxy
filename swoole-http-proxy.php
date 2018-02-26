@@ -1,4 +1,8 @@
 <?php
+   define(SERVER_HOST,"10.80.154.24");
+   //define("SERVER_HOST","127.0.0.1");
+   define("SERVER_PORT",9527);
+
    function now()
    {
       return date("Y-m-d H:i:s");
@@ -104,8 +108,7 @@
       }
    }
 
-   #$serv = new swoole_http_server('127.0.0.1', 9527, SWOOLE_BASE);
-   $serv = new swoole_http_server('10.80.154.24', 9527, SWOOLE_BASE);
+   $serv = new swoole_http_server(SERVER_HOST, SERVER_PORT, SWOOLE_BASE);
    //$serv->set(array('worker_num' => 8));
 
    $serv->on('Close', function ($serv, $fd, $reactorId)
