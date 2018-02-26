@@ -1,5 +1,5 @@
 <?php
-   define(SERVER_HOST,"10.80.154.24");
+   define("SERVER_HOST","10.80.154.24");
    //define("SERVER_HOST","127.0.0.1");
    define("SERVER_PORT",9527);
 
