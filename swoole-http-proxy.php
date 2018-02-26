@@ -1,7 +1,12 @@
 <?php
+
    define("SERVER_HOST","10.80.154.24");
-   //define("SERVER_HOST","127.0.0.1");
    define("SERVER_PORT",9527);
+   define("CACHE_REDIS_HOST","127.0.0.1");
+   define("CACHE_REDIS_PORT",6379);
+
+   //define("SERVER_HOST","127.0.0.1");
+
 
    function now()
    {
@@ -43,7 +48,7 @@
       public static function set($api,$data)
       {
          $key=self::getCacheKey($api);
-         if(self::isAllowedCache($key))
+         if(self::isAllowCache($key))
          {
             HttpProxyServer::$redis->hset("wd_cache",$key,$data);
          }
@@ -52,7 +57,7 @@
       public static function get($api)
       {
          $key=self::getCacheKey($api);
-         if(self::isAllowedCache($key))
+         if(self::isAllowCache($key))
          {
             $data=HttpProxyServer::$redis->hget("wd_cache",$key);
             if($data != false)
@@ -300,7 +305,7 @@
 
    HttpProxyServer::$serv = $serv;
    $redis = new \Redis();
-   $redis->connect("127.0.0.1",6379);
+   $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
    HttpProxyServer::$redis= $redis;
 
 
