@@ -108,7 +108,7 @@
                self::$backendCloseCount++;
                unset(HttpProxyServer::$backends[$cli->sock]);
                unset(HttpProxyServer::$frontends[$fd]);
-               save_log(self::$backendCloseCount . "\tbackend[{$cli->sock}]#[{$fd}] close");
+               //save_log(self::$backendCloseCount . "\tbackend[{$cli->sock}]#[{$fd}] close");
             });
          }
          return HttpProxyServer::$frontends[$fd];
@@ -116,12 +116,12 @@
    }
 
    $serv = new swoole_http_server(SERVER_HOST, SERVER_PORT, SWOOLE_BASE);
-   //$serv->set(array('worker_num' => 8));
+   $serv->set(array('worker_num' => 8));
 
    $serv->on('Close', function ($serv, $fd, $reactorId)
    {
       HttpProxyServer::$frontendCloseCount++;
-      save_log(HttpProxyServer::$frontendCloseCount . "\tfrontend[{$fd}] close");
+      //save_log(HttpProxyServer::$frontendCloseCount . "\tfrontend[{$fd}] close");
       //清理掉后端连接
       if (isset(HttpProxyServer::$frontends[$fd]))
       {
