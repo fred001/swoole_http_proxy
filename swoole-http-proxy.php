@@ -24,6 +24,69 @@
       }
    }
 
+   function client_response($cli,$resp,$debug_data)
+   {
+      if($cli->statusCode == -1)
+      {
+         $msg="statusCode = -1";
+         $msg.="errCode: ".$cli->errCode;
+         save_log($msg);
+      }
+      else if($cli->statusCode == -2)
+      {
+         //客户端提前关闭
+         $resp->status(499); //nginx 自定义的响应码
+         $resp->end('CLIENT CLOSED BY TIMEOUT');
+
+         $msg="client closed by timeout ";
+         $msg.="Error Detail \n";
+         //$msg.="URL:".$url."\n";
+         save_log($msg);
+      }
+      else if($cli->statusCode > 0)
+      {
+         $resp->status($cli->statusCode);
+      }
+      else 
+      {
+         $msg="unknown statusCode".$cli->statusCode;
+         $msg.="Error Detail \n";
+         //$msg.="URL:".$url."\n";
+         //$msg.="postData: ".print_r($postData,true)."\n";
+         $msg.=$cli->body;
+
+         save_log($msg);
+      }
+
+      if($cli->cookies)
+      {
+         foreach($cli->cookies as $k=>$v)
+         {
+            $resp->cookie($k,$v);
+         }
+      }
+
+      if($cli->headers)
+      {
+         //不压缩
+         foreach($cli->headers as $k=>$v)
+         {
+            if(in_array($k,array(
+               'content-encoding',
+               'vary',
+               'transfer-encoding',
+            )))
+            continue;
+
+            $resp->header($k,$v);
+         }
+      }
+
+      debug(json_encode($debug_data));
+
+      $resp->end($cli->body);
+   }
+
    class Cache
    {
       public static function init()
@@ -87,6 +150,18 @@
       static $serv;
       static $redis=null;
 
+      static function run($serv)
+      {
+         self::$serv = $serv;
+
+         $redis = new \Redis();
+         $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
+
+         self::$redis= $redis;
+
+         self::$serv->start();
+      }
+
       /**
       * @param $fd
       * @return swoole_http_client
@@ -95,7 +170,6 @@
       {
          if (!isset(HttpProxyServer::$frontends[$fd]))
          {
-            //$client = new swoole_http_client('wd-api.anchumall.com', 80);
             $client = new swoole_http_client(CLIENT_HOST,CLIENT_PORT);
 
             $client->set(array('keep_alive' => 0));
@@ -135,6 +209,8 @@
 
    $serv->on('Request', function (swoole_http_request $req, swoole_http_response $resp)
    {
+      $debug_data=array();
+
       if(empty($req->server['query_string']))
       {
          $url=$req->server['request_uri'];
@@ -144,7 +220,7 @@
          $url=$req->server['request_uri']."?".$req->server['query_string'];
       }
 
-      debug("request ".$url);
+      $debug_data['request_url']=$url;
 
       $client = HttpProxyServer::getClient($req->fd);
       $client->set(['timeout' => 10]);
@@ -155,10 +231,10 @@
          $client->setCookies($req->cookie);
       }
 
+      $debug_data['request_method']=$req->server['request_method'];
+
       if ($req->server['request_method'] == 'GET')
       {
-         debug("method get");
-
          $api=$req->get["s"];
          $cache_data=Cache::get($api);
          if($cache_data)
@@ -167,149 +243,30 @@
          }
          else
          {
+            $client->get($url, function ($cli) use ($req, $resp,$debug_data) {
 
-            //var_dump($req->cookie);
-            $client->get($url, function ($cli) use ($req, $resp) {
                $api=$req->get["s"];
                Cache::set($api,$cli->body);
 
-               if($cli->statusCode == -1)
-               {
-                  $msg="statusCode = -1";
-                  $msg.="errCode: ".$cli->errCode;
-                  save_log($msg);
-               }
-               else if($cli->statusCode == -2)
-               {
-                  //客户端提前关闭
-                  $resp->status(499); //nginx 自定义的响应码
-                  $resp->end('CLIENT CLOSED BY TIMEOUT');
-
-                  $msg="client closed by timeout ";
-                  $msg.="Error Detail \n";
-                  //$msg.="URL:".$url."\n";
-                  save_log($msg);
-               }
-               else if($cli->statusCode > 0)
-               {
-                  $resp->status($cli->statusCode);
-               }
-               else 
-               {
-                  $msg="unknown statusCode".$cli->statusCode;
-                  $msg.="Error Detail \n";
-                  //$msg.="URL:".$url."\n";
-                  $msg.=$cli->body;
-
-                  save_log($msg);
-
-               }
-
-               if($cli->cookies)
-               {
-                  foreach($cli->cookies as $k=>$v)
-                  {
-                     $resp->cookie($k,$v);
-                  }
-               }
-
-               if($cli->headers)
-               {
-                  //不压缩
-                  foreach($cli->headers as $k=>$v)
-                  {
-                     if(in_array($k,array(
-                        'content-encoding',
-                        'vary',
-                        'transfer-encoding',
-                     )))
-                     continue;
-
-                     $resp->header($k,$v);
-                  }
-               }
-
-               $resp->end($cli->body);
+               $debug_data['response_code']=$cli->statusCode;
+               $debug_data['response']=$cli->body;
+               client_response($cli,$resp,$debug_data);
             });
          }
       }
       elseif ($req->server['request_method'] == 'POST')
       {
-         debug("method post");
-
          $postData = $req->post;
          if($postData == false) 
          {
             $postData=$req->rawContent();
          }
 
-         //var_dump($req->rawContent());
-         //echo file_get_contents("php://input");
-         //var_dump($req->get);
-         ////var_dump($req->post);
-         //var_dump($postData);
+         $debug_data['post_data']=$postData;
 
-         $client->post($url, $postData, function ($cli) use ($req, $resp) {
+         $client->post($url, $postData, function ($cli) use ($req, $resp,$debug_data) {
 
-            debug("statusCode:".$cli->statusCode);
-
-            if($cli->statusCode == -1)
-            {
-               $msg="statusCode = -1";
-               $msg.="errCode: ".$cli->errCode;
-               save_log($msg);
-            }
-            else if($cli->statusCode == -2)
-            {
-               //客户端提前关闭
-               $resp->status(499); //nginx 自定义的响应码
-               $resp->end('CLIENT CLOSED BY TIMEOUT');
-
-               $msg="client closed by timeout ";
-               $msg.="Error Detail \n";
-               //$msg.="URL:".$url."\n";
-               save_log($msg);
-            }
-            else if($cli->statusCode > 0)
-            {
-               $resp->status($cli->statusCode);
-            }
-            else 
-            {
-               $msg="unknown statusCode".$cli->statusCode;
-               $msg.="Error Detail \n";
-               //$msg.="URL:".$url."\n";
-               //$msg.="postData: ".print_r($postData,true)."\n";
-               $msg.=$cli->body;
-
-               save_log($msg);
-            }
-
-            if($cli->cookies)
-            {
-               foreach($cli->cookies as $k=>$v)
-               {
-                  $resp->cookie($k,$v);
-               }
-            }
-
-            if($cli->headers)
-            {
-               //不压缩
-               foreach($cli->headers as $k=>$v)
-               {
-                  if(in_array($k,array(
-                     'content-encoding',
-                     'vary',
-                     'transfer-encoding',
-                  )))
-                  continue;
-
-                  $resp->header($k,$v);
-               }
-            }
-
-            $resp->end($cli->body);
+            client_response($cli,$resp,$debug_data);
          });
       }
       else
@@ -321,10 +278,4 @@
       }
    });
 
-   HttpProxyServer::$serv = $serv;
-   $redis = new \Redis();
-   $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
-   HttpProxyServer::$redis= $redis;
-
-
-   $serv->start();
+   HttpProxyServer::run($serv);
