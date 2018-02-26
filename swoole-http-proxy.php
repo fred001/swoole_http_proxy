@@ -15,26 +15,49 @@
 
    class Cache
    {
-      public static function set($api,$data)
+      public static function init()
       {
-         return false;
-         $key=self::getCacheKey($api);
-         HttpProxyServer::$redis->set("wd_cache",$data);
+         HttpProxyServer::$redis->hMset("wd_cache",array("test"=>"test value"));
       }
 
-      public static function get($api)
+      public static function isAllowCache($key)
       {
-         return false;
-         $key=self::getCacheKey($api);
-         $data=HttpProxyServer::$redis->get("wd_cache");
-         if($data != false)
+         $allowed=array(
+            'api/test/cache',
+         );
+
+         if(in_array($key,$allowed))
          {
-            return $data;
+            return true;
          }
          else
          {
             return false;
          }
+      }
+
+      public static function set($api,$data)
+      {
+         $key=self::getCacheKey($api);
+         if(self::isAllowedCache($key))
+         {
+            HttpProxyServer::$redis->hset("wd_cache",$key,$data);
+         }
+      }
+
+      public static function get($api)
+      {
+         $key=self::getCacheKey($api);
+         if(self::isAllowedCache($key))
+         {
+            $data=HttpProxyServer::$redis->hget("wd_cache",$key);
+            if($data != false)
+            {
+               return $data;
+            }
+         }
+
+         return false;
       }
 
       public static function getCacheKey($api)
