@@ -5,6 +5,11 @@
    define("CACHE_REDIS_HOST","10.168.165.109");
    define("CACHE_REDIS_PORT",6379);
 
+   define("CLIENT_HOST",'wd-api.anchumall.com');
+   define("CLIENT_PORT",'80');
+
+   define("DEBUG",false);
+
    //define("SERVER_HOST","127.0.0.1");
    //define("CACHE_REDIS_HOST","127.0.0.1");
 
@@ -21,6 +26,15 @@
       #openlog("swoole_proxy_http", LOG_PID | LOG_PERROR, LOG_LOCAL0);
       echo $msg;
       syslog(LOG_INFO,$msg);
+   }
+
+   function debug($msg)
+   {
+      if(DEBUG )
+      {
+         $msg=sprintf("debug %s",$msg);
+         save_log($msg);
+      }
    }
 
    class Cache
@@ -94,8 +108,8 @@
       {
          if (!isset(HttpProxyServer::$frontends[$fd]))
          {
-            $client = new swoole_http_client('wd-api.anchumall.com', 80);
-            //$client = new swoole_http_client('api.b2c.local', 80);
+            //$client = new swoole_http_client('wd-api.anchumall.com', 80);
+            $client = new swoole_http_client(CLIENT_HOST,CLIENT_PORT);
 
             $client->set(array('keep_alive' => 0));
             HttpProxyServer::$frontends[$fd] = $client;
@@ -116,7 +130,7 @@
    }
 
    $serv = new swoole_http_server(SERVER_HOST, SERVER_PORT, SWOOLE_BASE);
-   $serv->set(array('worker_num' => 8));
+   //$serv->set(array('worker_num' => 8));
 
    $serv->on('Close', function ($serv, $fd, $reactorId)
    {
@@ -142,6 +156,9 @@
       {
          $url=$req->server['request_uri']."?".$req->server['query_string'];
       }
+
+      debug("request ".$url);
+
       $client = HttpProxyServer::getClient($req->fd);
       $client->set(['timeout' => 10]);
 
@@ -153,6 +170,8 @@
 
       if ($req->server['request_method'] == 'GET')
       {
+         debug("method get");
+
          $api=$req->get["s"];
          $cache_data=Cache::get($api);
          if($cache_data)
@@ -169,6 +188,9 @@
 
                if($cli->statusCode == -1)
                {
+                  $msg="statusCode = -1";
+                  $msg.="errCode: ".$cli->errCode;
+                  save_log($msg);
                }
                else if($cli->statusCode == -2)
                {
@@ -178,7 +200,7 @@
 
                   $msg="client closed by timeout ";
                   $msg.="Error Detail \n";
-                  $msg.="URL:".$url."\n";
+                  //$msg.="URL:".$url."\n";
                   save_log($msg);
                }
                else if($cli->statusCode > 0)
@@ -189,7 +211,7 @@
                {
                   $msg="unknown statusCode".$cli->statusCode;
                   $msg.="Error Detail \n";
-                  $msg.="URL:".$url."\n";
+                  //$msg.="URL:".$url."\n";
                   $msg.=$cli->body;
 
                   save_log($msg);
@@ -226,6 +248,8 @@
       }
       elseif ($req->server['request_method'] == 'POST')
       {
+         debug("method post");
+
          $postData = $req->post;
          if($postData == false) 
          {
@@ -236,14 +260,17 @@
          //echo file_get_contents("php://input");
          //var_dump($req->get);
          ////var_dump($req->post);
-         var_dump($postData);
+         //var_dump($postData);
 
          $client->post($url, $postData, function ($cli) use ($req, $resp) {
 
-            var_dump($cli->statusCode);
-            var_dump($cli->body);
+            debug("statusCode:".$cli->statusCode);
+
             if($cli->statusCode == -1)
             {
+               $msg="statusCode = -1";
+               $msg.="errCode: ".$cli->errCode;
+               save_log($msg);
             }
             else if($cli->statusCode == -2)
             {
@@ -253,7 +280,7 @@
 
                $msg="client closed by timeout ";
                $msg.="Error Detail \n";
-               $msg.="URL:".$url."\n";
+               //$msg.="URL:".$url."\n";
                save_log($msg);
             }
             else if($cli->statusCode > 0)
@@ -264,8 +291,8 @@
             {
                $msg="unknown statusCode".$cli->statusCode;
                $msg.="Error Detail \n";
-               $msg.="URL:".$url."\n";
-               $msg.="postData: ".print_r($postData,true)."\n";
+               //$msg.="URL:".$url."\n";
+               //$msg.="postData: ".print_r($postData,true)."\n";
                $msg.=$cli->body;
 
                save_log($msg);
@@ -300,6 +327,8 @@
       }
       else
       {
+         debug("method not allow (not get or post)");
+
          $resp->status(405);
          $resp->end("method not allow.");
       }
