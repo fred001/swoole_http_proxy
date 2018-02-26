@@ -2,10 +2,11 @@
 
    define("SERVER_HOST","10.80.154.24");
    define("SERVER_PORT",9527);
-   define("CACHE_REDIS_HOST","127.0.0.1");
+   define("CACHE_REDIS_HOST","10.168.165.109");
    define("CACHE_REDIS_PORT",6379);
 
    //define("SERVER_HOST","127.0.0.1");
+   //define("CACHE_REDIS_HOST","127.0.0.1");
 
 
    function now()
@@ -33,6 +34,7 @@
       {
          $allowed=array(
             'api/test/cache',
+            'user/site/get_site_list',
          );
 
          if(in_array($key,$allowed))
