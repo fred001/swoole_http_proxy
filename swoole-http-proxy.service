@@ -1,0 +1,12 @@
+[Unit]
+Description=swoole http proxy service
+
+[Service]
+Type=simple
+ExecStart=php swoole-http-proxy.php
+
+
+[Install]
+WantedBy=multi-user.target  
+
+
