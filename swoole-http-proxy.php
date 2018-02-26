@@ -1,18 +1,5 @@
 <?php
-
-   define("SERVER_HOST","10.80.154.24");
-   define("SERVER_PORT",9527);
-   define("CACHE_REDIS_HOST","10.168.165.109");
-   define("CACHE_REDIS_PORT",6379);
-
-   define("CLIENT_HOST",'wd-api.anchumall.com');
-   define("CLIENT_PORT",'80');
-
-   define("DEBUG",false);
-
-   //define("SERVER_HOST","127.0.0.1");
-   //define("CACHE_REDIS_HOST","127.0.0.1");
-
+   require_once(dirname(__FILE__)."/config.php");
 
    function now()
    {
