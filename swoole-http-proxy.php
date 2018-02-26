@@ -209,6 +209,15 @@
       //save_log("close");
    });
 
+   $serv->on("Start",function(){
+      save_log("start!!");
+   });
+
+   $serv->on("Shutdown",function(){
+      save_log("close!!");
+   });
+
+
    $serv->on('Request', function (swoole_http_request $req, swoole_http_response $resp)
    {
       $debug_data=array();
