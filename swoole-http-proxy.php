@@ -149,6 +149,32 @@
       static $backends = array();
       static $serv;
       static $redis=null;
+      static $status=array();
+
+      static function addStatus($key,$plus_value)
+      {
+         $plus_value=intval($plus_value);
+
+         if(!isset(self::$status[$key]))
+         {
+            self::$status[$key]=$plus_value;
+         }
+         else
+         {
+            self::$status[$key]+=$plus_value;
+         }
+      }
+
+      static function showStatus()
+      {
+         $msg="Status:\n";
+         foreach(self::$status as $k=>$v)
+         {
+            $msg.=sprintf("\t %s : %s\n", $k,$v);
+         }
+
+         echo $msg;
+      }
 
       static function run($serv)
       {
@@ -232,6 +258,15 @@
       }
 
       $debug_data['request_url']=$url;
+
+
+      HttpProxyServer::addStatus("visit",1);
+
+      if($url == "/status")
+      {
+         HttpProxyServer::showStatus();
+      }
+
 
       $client = HttpProxyServer::getClient($req->fd);
       $client->set(['timeout' => 10]);
