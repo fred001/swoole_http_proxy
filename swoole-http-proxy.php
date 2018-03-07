@@ -81,7 +81,6 @@
          }
       }
 
-      var_dump('response');
       debug(json_encode($debug_data));
 
       $resp->end($cli->body);
@@ -89,9 +88,9 @@
 
    class Cache
    {
-      public static function init()
+      public static function init($redis)
       {
-         HttpProxyServer::$redis->hMset("wd_cache",array("test"=>"test value"));
+         $redis->hMset("wd_cache",array("test"=>"test value"));
       }
 
       public static function isAllowCache($key)
@@ -111,21 +110,26 @@
          }
       }
 
-      public static function set($api,$data)
+      public static function set($redis,$api,$data)
       {
          $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
          {
-            HttpProxyServer::$redis->hset("wd_cache",$key,$data);
+            //check if data is valid
+            $origin_data=json_decode($data,true);
+            if(isset($origin_data['error']) && $origin_data['error'] == 0)
+            {
+               $redis->hset("wd_cache",$key,$data);
+            }
          }
       }
 
-      public static function get($api)
+      public static function get($redis,$api)
       {
          $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
          {
-            $data=HttpProxyServer::$redis->hget("wd_cache",$key);
+            $data=$redis->hget("wd_cache",$key);
             if($data != false)
             {
                return $data;
@@ -148,7 +152,6 @@
       static $frontends = array();
       static $backends = array();
       static $serv;
-      static $redis=null;
       static $status=array();
 
       static function addStatus($key,$plus_value)
@@ -183,10 +186,13 @@
          $redis = new \Redis();
          $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
 
-         self::$redis= $redis;
+         Cache::init($redis);
 
-         save_log("start");
+         self::$serv->set(array(
+            'pid_file' => __DIR__.'/server.pid',
+         ));
          self::$serv->start();
+
       }
 
       /**
@@ -217,13 +223,19 @@
    }
 
    $serv = new swoole_http_server(SERVER_HOST, SERVER_PORT, SWOOLE_BASE);
-   //$serv->set(array('worker_num' => 8));
+   $serv->set(array('worker_num' => 8));
+
+   $serv->on('workerstart', function($serv, $id) {
+      $redis = new \Redis();
+      $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
+
+      $serv->redis = $redis;
+   });
+
 
    $serv->on('Close', function ($serv, $fd, $reactorId)
    {
       HttpProxyServer::$frontendCloseCount++;
-      //save_log(HttpProxyServer::$frontendCloseCount . "\tfrontend[{$fd}] close");
-      //清理掉后端连接
       if (isset(HttpProxyServer::$frontends[$fd]))
       {
          $backend_socket = HttpProxyServer::$frontends[$fd];
@@ -231,21 +243,19 @@
          unset(HttpProxyServer::$backends[$backend_socket->sock]);
          unset(HttpProxyServer::$frontends[$fd]);
       }
-
-      //save_log("close");
    });
 
    $serv->on("Start",function(){
-      save_log("start!!");
+      save_log("server start");
    });
 
    $serv->on("Shutdown",function(){
-      save_log("close!!");
+      save_log("server shutdown");
    });
 
 
-   $serv->on('Request', function (swoole_http_request $req, swoole_http_response $resp)
-   {
+   $serv->on('Request', function (swoole_http_request $req, swoole_http_response $resp) use ($serv){
+
       $debug_data=array();
 
       if(empty($req->server['query_string']))
@@ -282,7 +292,7 @@
       if ($req->server['request_method'] == 'GET')
       {
          $api=$req->get["s"];
-         $cache_data=Cache::get($api);
+         $cache_data=Cache::get($serv->redis,$api);
          if($cache_data)
          {
             $resp->end($cache_data);
@@ -292,7 +302,7 @@
             $client->get($url, function ($cli) use ($req, $resp,$debug_data) {
 
                $api=$req->get["s"];
-               Cache::set($api,$cli->body);
+               Cache::set($serv->redis,$api,$cli->body);
 
                $debug_data['response_code']=$cli->statusCode;
                $debug_data['response']=$cli->body;
