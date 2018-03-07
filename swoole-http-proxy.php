@@ -190,7 +190,10 @@
 
          self::$serv->set(array(
             'pid_file' => __DIR__.'/server.pid',
+            //'daemonize'=>true,
+            //'log_file'=>__DIR__.'/log/swoole.log', //daemonize=true才有效
          ));
+
          self::$serv->start();
 
       }
