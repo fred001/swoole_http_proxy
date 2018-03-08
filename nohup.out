@@ -1,0 +1,89 @@
+[monitor] 10:24:51 INFO: Starting syncthing
+[C26GI] 10:24:51 INFO: syncthing v0.14.43 "Dysprosium Dragonfly" (go1.8.3 linux-amd64) mockbuild@aaeb278a052a477585e171790c7d1ce1 2018-01-13 10:57:13 UTC [noupgrade]
+[C26GI] 10:24:51 INFO: My ID: C26GI7J-CZ3WISD-GAKDMQZ-KSB4Q2F-GTHI2N3-GGANSXS-O56PAM5-WYT4KAK
+[C26GI] 10:24:52 INFO: Single thread SHA256 performance is 373 MB/s using minio/sha256-simd (320 MB/s using crypto/sha256).
+[C26GI] 10:24:52 INFO: Hashing performance with weak hash is 301.91 MB/s
+[C26GI] 10:24:53 INFO: Hashing performance without weak hash is 352.55 MB/s
+[C26GI] 10:24:53 INFO: Weak hash enabled, as it has an acceptable performance impact.
+[C26GI] 10:24:53 INFO: Ready to synchronize "share" (h5ixm-zjdbx) (readwrite)
+[C26GI] 10:24:53 INFO: Send rate is unlimited, receive rate is unlimited
+[C26GI] 10:24:53 INFO: Rate limits do not apply to LAN connections
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v4-2.syncthing.net/v2/?id=DVU36WY-H3LVZHW-E6LLFRE-YAFN5EL-HILWRYP-OC2M47J-Z4PE62Y-ADIBDQC
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v4-3.syncthing.net/v2/?id=VK6HNJ3-VVMM66S-HRVWSCR-IXEHL2H-U4AQ4MW-UCPQBWX-J2L2UBK-NVZRDQZ
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v4-4.syncthing.net/v2/?id=LYXKCHX-VI3NYZR-ALCJBHF-WMZYSPK-QG6QJA3-MPFYMSO-U56GTUK-NA2MIAW
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v6-2.syncthing.net/v2/?id=DVU36WY-H3LVZHW-E6LLFRE-YAFN5EL-HILWRYP-OC2M47J-Z4PE62Y-ADIBDQC
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v6-3.syncthing.net/v2/?id=VK6HNJ3-VVMM66S-HRVWSCR-IXEHL2H-U4AQ4MW-UCPQBWX-J2L2UBK-NVZRDQZ
+[C26GI] 10:24:53 INFO: Using discovery server https://discovery-v6-4.syncthing.net/v2/?id=LYXKCHX-VI3NYZR-ALCJBHF-WMZYSPK-QG6QJA3-MPFYMSO-U56GTUK-NA2MIAW
+[C26GI] 10:24:53 INFO: TCP listener ([::]:22000) starting
+[C26GI] 10:24:53 INFO: Relay listener (dynamic+https://relays.syncthing.net/endpoint) starting
+[C26GI] 10:24:53 INFO: KCP listener ([::]:22020) starting
+[C26GI] 10:24:53 INFO: GUI and API listening on 127.0.0.1:8384
+[C26GI] 10:24:53 INFO: Access the GUI via the following URL: http://127.0.0.1:8384/
+[C26GI] 10:24:53 INFO: Device C26GI7J-CZ3WISD-GAKDMQZ-KSB4Q2F-GTHI2N3-GGANSXS-O56PAM5-WYT4KAK is "localhost.localdomain" at [dynamic]
+[C26GI] 10:24:53 INFO: Device MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM is "iamlosing.frd.life" at [dynamic]
+[C26GI] 10:24:53 INFO: Device 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 is "acer.frd.life" at [dynamic]
+[C26GI] 10:24:53 INFO: Device 7FKZVGU-WFRQUXA-W5UTGH5-V3RZR3D-D3XB727-4TU22MK-36CEPFP-5H2PYQP is "pc.frd.life" at [dynamic]
+[C26GI] 10:24:56 INFO: Completed initial scan of readwrite folder "share" (h5ixm-zjdbx)
+[C26GI] 10:25:05 INFO: Established secure connection to MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM at 10.10.10.161:46930-121.41.52.63:22000 (tcp-client) (TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305)
+[C26GI] 10:25:05 INFO: Device MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM client is "syncthing v0.14.43" named "iZ23c098pq9Z"
+[C26GI] 10:25:08 INFO: kcp://0.0.0.0:22020 detected NAT type: Symmetric NAT
+[C26GI] 10:25:14 INFO: Detected 1 NAT device
+[C26GI] 10:25:29 INFO: Established secure connection to 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 at 10.10.10.161:42894-5.9.250.38:22067 (relay-client) (TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305)
+[C26GI] 10:25:29 INFO: Device 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 client is "syncthing v0.14.43" named "acer.frd.life"
+[C26GI] 10:25:51 INFO: Joined relay relay://160.16.83.235:22067
+[C26GI] 10:31:59 INFO: Folder "share" (h5ixm-zjdbx) isn't making progress. Pausing puller for 1m0s.
+[C26GI] 11:00:11 INFO: Disconnecting from relay relay://160.16.83.235:22067/?id=KRDW5KD-XJCTGW6-HKH4YC5-N44HHVT-BOWY2JL-TRJ7REV-3U7GIGC-XXZV4AU&pingInterval=1m0s&networkTimeout=2m0s&sessionLimitBps=0&globalLimitBps=0&statusAddr=:22070&providedBy=random guy running openbsd due to error: EOF
+[C26GI] 11:00:11 INFO: Disconnected from relay relay://160.16.83.235:22067
+[C26GI] 11:00:15 INFO: Joined relay relay://37.187.57.69:22067
+[C26GI] 11:10:22 INFO: Usage report: Post https://data.syncthing.net/newdata: read tcp 10.10.10.161:41208->165.227.145.99:443: read: connection timed out
+[C26GI] 11:22:28 INFO: kcp://0.0.0.0:22020 detected NAT type: Port restricted NAT
+[C26GI] 11:22:28 INFO: kcp://0.0.0.0:22020 resolved external address kcp://115.205.1.51:1155 (via stun.schlund.de:3478)
+[C26GI] 17:26:12 INFO: Paused state detected, possibly woke up from standby. Restarting in 1m0s.
+[C26GI] 17:26:31 INFO: Connection to 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 closed: reading length: read tcp 10.10.10.161:42894->5.9.250.38:22067: read: connection reset by peer
+[C26GI] 17:26:32 INFO: kcp://0.0.0.0:22020 detected NAT type: Symmetric NAT
+[C26GI] 17:27:12 INFO: Restarting
+[C26GI] 17:27:12 INFO: Disconnected from relay relay://37.187.57.69:22067
+[C26GI] 17:27:12 INFO: Exiting
+[monitor] 17:27:12 INFO: Syncthing exited: exit status 3
+[monitor] 17:27:13 INFO: Starting syncthing
+[C26GI] 17:27:13 INFO: syncthing v0.14.43 "Dysprosium Dragonfly" (go1.8.3 linux-amd64) mockbuild@aaeb278a052a477585e171790c7d1ce1 2018-01-13 10:57:13 UTC [noupgrade]
+[C26GI] 17:27:13 INFO: My ID: C26GI7J-CZ3WISD-GAKDMQZ-KSB4Q2F-GTHI2N3-GGANSXS-O56PAM5-WYT4KAK
+[C26GI] 17:27:14 INFO: Single thread SHA256 performance is 382 MB/s using minio/sha256-simd (328 MB/s using crypto/sha256).
+[C26GI] 17:27:15 INFO: Hashing performance with weak hash is 309.93 MB/s
+[C26GI] 17:27:15 INFO: Hashing performance without weak hash is 373.27 MB/s
+[C26GI] 17:27:15 INFO: Weak hash enabled, as it has an acceptable performance impact.
+[C26GI] 17:27:15 INFO: Ready to synchronize "share" (h5ixm-zjdbx) (readwrite)
+[C26GI] 17:27:15 INFO: Send rate is unlimited, receive rate is unlimited
+[C26GI] 17:27:15 INFO: Rate limits do not apply to LAN connections
+[C26GI] 17:27:15 INFO: Using discovery server https://discovery-v4-2.syncthing.net/v2/?id=DVU36WY-H3LVZHW-E6LLFRE-YAFN5EL-HILWRYP-OC2M47J-Z4PE62Y-ADIBDQC
+[C26GI] 17:27:15 INFO: Relay listener (dynamic+https://relays.syncthing.net/endpoint) starting
+[C26GI] 17:27:15 INFO: Using discovery server https://discovery-v4-3.syncthing.net/v2/?id=VK6HNJ3-VVMM66S-HRVWSCR-IXEHL2H-U4AQ4MW-UCPQBWX-J2L2UBK-NVZRDQZ
+[C26GI] 17:27:15 INFO: TCP listener ([::]:22000) starting
+[C26GI] 17:27:15 INFO: KCP listener ([::]:22020) starting
+[C26GI] 17:27:16 INFO: Completed initial scan of readwrite folder "share" (h5ixm-zjdbx)
+[C26GI] 17:27:20 INFO: Using discovery server https://discovery-v4-4.syncthing.net/v2/?id=LYXKCHX-VI3NYZR-ALCJBHF-WMZYSPK-QG6QJA3-MPFYMSO-U56GTUK-NA2MIAW
+[C26GI] 17:27:25 INFO: kcp://0.0.0.0:22020 detected NAT type: Symmetric NAT
+[C26GI] 17:27:30 INFO: Using discovery server https://discovery-v6-2.syncthing.net/v2/?id=DVU36WY-H3LVZHW-E6LLFRE-YAFN5EL-HILWRYP-OC2M47J-Z4PE62Y-ADIBDQC
+[C26GI] 17:27:42 INFO: Using discovery server https://discovery-v6-3.syncthing.net/v2/?id=VK6HNJ3-VVMM66S-HRVWSCR-IXEHL2H-U4AQ4MW-UCPQBWX-J2L2UBK-NVZRDQZ
+[C26GI] 17:27:42 INFO: Using discovery server https://discovery-v6-4.syncthing.net/v2/?id=LYXKCHX-VI3NYZR-ALCJBHF-WMZYSPK-QG6QJA3-MPFYMSO-U56GTUK-NA2MIAW
+[C26GI] 17:27:42 INFO: Device 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 is "acer.frd.life" at [dynamic]
+[C26GI] 17:27:42 INFO: Device 7FKZVGU-WFRQUXA-W5UTGH5-V3RZR3D-D3XB727-4TU22MK-36CEPFP-5H2PYQP is "pc.frd.life" at [dynamic]
+[C26GI] 17:27:42 INFO: Device C26GI7J-CZ3WISD-GAKDMQZ-KSB4Q2F-GTHI2N3-GGANSXS-O56PAM5-WYT4KAK is "localhost.localdomain" at [dynamic]
+[C26GI] 17:27:42 INFO: Device MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM is "iamlosing.frd.life" at [dynamic]
+[C26GI] 17:27:42 INFO: GUI and API listening on 127.0.0.1:8384
+[C26GI] 17:27:42 INFO: Access the GUI via the following URL: http://127.0.0.1:8384/
+[C26GI] 17:27:46 INFO: Detected 1 NAT device
+[C26GI] 17:27:54 INFO: Established secure connection to MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM at 10.10.10.161:51342-121.41.52.63:22000 (tcp-client) (TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305)
+[C26GI] 17:27:54 INFO: Device MWDYLE4-ECYFYFO-APAPLOJ-R5KXEIZ-CG4LNNK-LEHSUP5-HOXTMHP-FAVI6QM client is "syncthing v0.14.43" named "iZ23c098pq9Z"
+[C26GI] 17:28:13 INFO: Joined relay relay://160.16.83.235:22067
+[C26GI] 17:28:15 INFO: Established secure connection to 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 at 10.10.10.161:47242-5.9.250.38:22067 (relay-client) (TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305)
+[C26GI] 17:28:15 INFO: Device 3J3DB7X-ITZPXCF-35FAX4M-H32MR75-ZAQFI4X-JSMDV7M-5FJBMOX-2FVN7A6 client is "syncthing v0.14.43" named "acer.frd.life"
+[C26GI] 17:32:45 INFO: kcp://0.0.0.0:22020 detected NAT type: Port restricted NAT
+[C26GI] 17:32:45 INFO: kcp://0.0.0.0:22020 resolved external address kcp://115.205.1.51:1260 (via stun.schlund.de:3478)
+[C26GI] 18:00:11 INFO: Disconnecting from relay relay://160.16.83.235:22067/?id=KRDW5KD-XJCTGW6-HKH4YC5-N44HHVT-BOWY2JL-TRJ7REV-3U7GIGC-XXZV4AU&pingInterval=1m0s&networkTimeout=2m0s&sessionLimitBps=0&globalLimitBps=0&statusAddr=:22070&providedBy=random guy running openbsd due to error: EOF
+[C26GI] 18:00:11 INFO: Disconnected from relay relay://160.16.83.235:22067
+[C26GI] 18:00:12 INFO: Joined relay relay://108.28.183.249:22067
+[C26GI] 18:02:12 INFO: Disconnected from relay relay://108.28.183.249:22067
+[C26GI] 18:02:13 INFO: Joined relay relay://195.201.94.137:443
+[C26GI] 18:13:44 INFO: Usage report: Post https://data.syncthing.net/newdata: read tcp 10.10.10.161:44800->165.227.145.99:443: read: connection timed out
+[monitor] 19:25:54 INFO: Signal 15 received; exiting
