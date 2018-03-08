@@ -1,3 +1,0 @@
-bin_PROGRAMS=swoole_http_proxy
-swoole_http_proxy_SOURCES=swoole_http_proxy
-
