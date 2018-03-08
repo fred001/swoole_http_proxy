@@ -1,4 +1,6 @@
 <?php
+   define("SERVICE_NAME","swoole_http_proxy");
+
    require_once(dirname(__FILE__)."/config.php");
 
    function now()
@@ -10,7 +12,7 @@
    {
       $msg=sprintf("[%s] %s\n",now(),$msg);
 
-      openlog("swoole_proxy_http", LOG_PID | LOG_PERROR ,LOG_LOCAL0);
+      openlog(SERVICE_NAME, LOG_PID | LOG_PERROR ,LOG_LOCAL0);
       syslog(LOG_INFO,$msg);
    }
 
@@ -189,9 +191,9 @@
          Cache::init($redis);
 
          self::$serv->set(array(
-            'pid_file' => __DIR__.'/server.pid',
-            //'daemonize'=>true,
-            //'log_file'=>__DIR__.'/log/swoole.log', //daemonize=true才有效
+            'daemonize'=>true,
+            'pid_file' => '/var/run/'.SERVICE_NAME.'.pid',
+            'log_file'=>'/var/log/'.SERVICE_NAME.'.log', //daemonize=true才有效
          ));
 
          self::$serv->start();
