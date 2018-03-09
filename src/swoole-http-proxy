@@ -96,8 +96,8 @@
       public static function init($redis)
       {
          $redis->hMset(CACHE_REDIS_KEY,array(
-            "stat_visited"=>"",
-            "stat_cached"=>""
+            "stat_visited"=>0,
+            "stat_cached"=>0,
          ));
       }
 
@@ -105,10 +105,12 @@
       {
          if(in_array($key,ALLOW_CACHE_KEYS))
          {
+            debug("[cache is allow] $key ");
             return true;
          }
          else
          {
+            debug("[cache is not allow] $key ");
             return false;
          }
       }
@@ -123,6 +125,10 @@
             if(isset($origin_data['error']) && $origin_data['error'] == 0)
             {
                $redis->hset(CACHE_REDIS_KEY,$key,$data);
+            }
+            else
+            {
+               debug("[cache set failed] $key is not expect format");
             }
          }
       }
@@ -156,7 +162,7 @@
          $msg.=sprintf("\t %s : %s\n", "visited",$redis->hget(CACHE_REDIS_KEY,"stat_visited"));
          $msg.=sprintf("\t %s : %s\n", "cached",$redis->hget(CACHE_REDIS_KEY,"stat_cached"));
 
-         echo $msg;
+         return $msg;
       }
    }
 
@@ -268,7 +274,9 @@
 
       if($url == "/status")
       {
-         Cache::showStatus($serv->redis);
+         $msg=Cache::showStatus($serv->redis);
+
+         $resp->end($msg);
       }
 
 
