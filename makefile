@@ -6,24 +6,25 @@ sysconfdir=/etc
 src=$(CURDIR)/src
 confdir=$(sysconfdir)/swoole-http-proxy/
 
-#5. info user  enable /start  daemon
+#command
 
-# prefix 等安装目录变量要自己定义的
+COPY=cp
+RM=rm
 
 default: test
 test:
 		@echo $(CURDIR)
 install:
 		@#copy swoole_http_proxy
-		cp $(src)/swoole-http-proxy $(bindir)/swoole-http-proxy
+		$(COPY) $(src)/swoole-http-proxy $(bindir)/swoole-http-proxy
 
 		@#2. copy config   /etc/swoole_http_proxy/
 		[  -d $(confdir) ] || mkdir $(confdir)
 
-		cp -r $(src)/config/* $(sysconfdir)/swoole-http-proxy/
+		$(COPY) -r $(src)/config/* $(sysconfdir)/swoole-http-proxy/
 
 		@#3. copy service file  /etc/systemd/...
-		cp $(src)/swoole-http-proxy.service /usr/lib/systemd/system/
+		$(COPY) $(src)/swoole-http-proxy.service /usr/lib/systemd/system/
 
 		systemctl daemon-reload
 		systemctl restart swoole-http-proxy
@@ -32,9 +33,9 @@ install:
 		@#mkdir /var/run/swoole_http_proxy.pid
 
 uninstall:
-		rm $(bindir)/swoole-http-proxy
-		rm -rf $(sysconfdir)/swoole-http-proxy/
-		rm /usr/lib/systemd/system/swoole-http-proxy.service
+		$(RM) $(bindir)/swoole-http-proxy
+		$(RM) -rf $(sysconfdir)/swoole-http-proxy/
+		$(RM) /usr/lib/systemd/system/swoole-http-proxy.service
 		systemctl daemon-reload
 
 
