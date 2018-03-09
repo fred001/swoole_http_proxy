@@ -129,7 +129,7 @@
 
       public static function get($redis,$api)
       {
-         $redis->hinc(CACHE_REDIS_KEY,"stat_visited",1);
+         $redis->hincrby(CACHE_REDIS_KEY,"stat_visited",1);
 
          $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
@@ -137,7 +137,7 @@
             $data=$redis->hget(CACHE_REDIS_KEY,$key);
             if($data != false)
             {
-               $redis->hinc(CACHE_REDIS_KEY,"stat_cached",1);
+               $redis->hincrby(CACHE_REDIS_KEY,"stat_cached",1);
                return $data;
             }
          }
