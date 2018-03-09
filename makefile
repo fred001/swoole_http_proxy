@@ -1,10 +1,9 @@
 SHELL=/bin/sh
 
-#1. copy swoole_http_proxy   /usr/bin/
-#2. copy config   /etc/swoole_http_proxy/
-#3. copy service file  /etc/systemd/...
-#4. system reload domain
-#6. log dir, pid dir
+prefix=/usr
+bindir=/usr/bin
+sysconfdir=/etc
+src=$(CURDIR)/src
 
 #5. info user  enable /start  daemon
 
@@ -12,8 +11,19 @@ SHELL=/bin/sh
 
 default: test
 test:
-		@echo $(SHELL)
-		@echo $(bindir)
-		@echo $(sbindir)
-		@echo $(libdir)
-		@#ls $(prefix)
+		@echo $(CURDIR)
+install:
+		#copy swoole_http_proxy
+		cp $(src)/swoole-http-proxy $(bindir)/swoole-http-proxy
+
+		#2. copy config   /etc/swoole_http_proxy/
+		cp -r $(src)/config $(sysconfdir)/swoole-http-proxy/
+
+		#3. copy service file  /etc/systemd/...
+		cp $(src)/swoole-http-proxy.service /usr/lib/systemd/system/
+
+		systemctl daemon-reload
+
+		#mkdir /var/log/swoole_http_proxy.log
+		#mkdir /var/run/swoole_http_proxy.pid
+

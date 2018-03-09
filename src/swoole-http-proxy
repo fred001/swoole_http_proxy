@@ -1,5 +1,7 @@
+#!/usr/bin/env php
+
 <?php
-   define("SERVICE_NAME","swoole_http_proxy");
+   define("SERVICE_NAME","swoole-http_proxy");
 
    require_once(dirname(__FILE__)."/config.php");
 
