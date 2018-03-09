@@ -17,7 +17,7 @@ install:
 		cp $(src)/swoole-http-proxy $(bindir)/swoole-http-proxy
 
 		#2. copy config   /etc/swoole_http_proxy/
-		cp -r $(src)/config $(sysconfdir)/swoole-http-proxy/
+		cp -r $(src)/config/ $(sysconfdir)/swoole-http-proxy/
 
 		#3. copy service file  /etc/systemd/...
 		cp $(src)/swoole-http-proxy.service /usr/lib/systemd/system/
