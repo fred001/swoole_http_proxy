@@ -1,10 +1,9 @@
 #!/usr/bin/env php
-
 <?php
    define("SERVICE_NAME","swoole-http_proxy");
 
    require_once("/etc/swoole-http-proxy/config.php");
-
+   require_once("/etc/swoole-http-proxy/cache.php");
 
 
    function now()
@@ -96,7 +95,10 @@
    {
       public static function init($redis)
       {
-         $redis->hMset("wd_cache",array("test"=>"test value"));
+         $redis->hMset(CACHE_REDIS_KEY,array(
+            "stat_visited"=>"",
+            "stat_cached"=>""
+         ));
       }
 
       public static function isAllowCache($key)
@@ -120,19 +122,22 @@
             $origin_data=json_decode($data,true);
             if(isset($origin_data['error']) && $origin_data['error'] == 0)
             {
-               $redis->hset("wd_cache",$key,$data);
+               $redis->hset(CACHE_REDIS_KEY,$key,$data);
             }
          }
       }
 
       public static function get($redis,$api)
       {
+         $redis->hinc(CACHE_REDIS_KEY,"stat_visited",1);
+
          $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
          {
-            $data=$redis->hget("wd_cache",$key);
+            $data=$redis->hget(CACHE_REDIS_KEY,$key);
             if($data != false)
             {
+               $redis->hinc(CACHE_REDIS_KEY,"stat_cached",1);
                return $data;
             }
          }
@@ -144,6 +149,15 @@
       {
          return $api;
       }
+
+      public static function showStatus($redis)
+      {
+         $msg="Stat:\n";
+         $msg.=sprintf("\t %s : %s\n", "visited",$redis->hget(CACHE_REDIS_KEY,"stat_visited"));
+         $msg.=sprintf("\t %s : %s\n", "cached",$redis->hget(CACHE_REDIS_KEY,"stat_cached"));
+
+         echo $msg;
+      }
    }
 
    class HttpProxyServer
@@ -153,32 +167,7 @@
       static $frontends = array();
       static $backends = array();
       static $serv;
-      static $status=array();
 
-      static function addStatus($key,$plus_value)
-      {
-         $plus_value=intval($plus_value);
-
-         if(!isset(self::$status[$key]))
-         {
-            self::$status[$key]=$plus_value;
-         }
-         else
-         {
-            self::$status[$key]+=$plus_value;
-         }
-      }
-
-      static function showStatus()
-      {
-         $msg="Status:\n";
-         foreach(self::$status as $k=>$v)
-         {
-            $msg.=sprintf("\t %s : %s\n", $k,$v);
-         }
-
-         echo $msg;
-      }
 
       static function run($serv)
       {
@@ -230,6 +219,7 @@
    $serv->set(array('worker_num' => 8));
 
    $serv->on('workerstart', function($serv, $id) {
+
       $redis = new \Redis();
       $redis->connect(CACHE_REDIS_HOST,CACHE_REDIS_PORT);
 
@@ -278,7 +268,7 @@
 
       if($url == "/status")
       {
-         HttpProxyServer::showStatus();
+         Cache::showStatus($serv->redis);
       }
 
 
