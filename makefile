@@ -24,6 +24,13 @@ install:
 
 		systemctl daemon-reload
 
-		#mkdir /var/log/swoole_http_proxy.log
-		#mkdir /var/run/swoole_http_proxy.pid
+		@#mkdir /var/log/swoole_http_proxy.log
+		@#mkdir /var/run/swoole_http_proxy.pid
+
+uninstall:
+		rm $(bindir)/swoole-http-proxy
+		rm -rf $(sysconfdir)/swoole-http-proxy/
+		rm /usr/lib/systemd/system/swoole-http-proxy.service
+		systemctl daemon-reload
+
 
