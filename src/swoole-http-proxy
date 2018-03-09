@@ -99,12 +99,7 @@
 
       public static function isAllowCache($key)
       {
-         $allowed=array(
-            'api/test/cache',
-            'user/site/get_site_list',
-         );
-
-         if(in_array($key,$allowed))
+         if(in_array($key,ALLOW_CACHE_KEYS))
          {
             return true;
          }
@@ -195,7 +190,7 @@
          self::$serv->set(array(
             //'daemonize'=>true,
             'pid_file' => '/var/run/'.SERVICE_NAME.'.pid',
-            //'log_file'=>'/var/log/'.SERVICE_NAME.'.log', //daemonize=true才有效
+            'log_file'=>'/var/log/'.SERVICE_NAME.'.log', //daemonize=true才有效
          ));
 
          self::$serv->start();

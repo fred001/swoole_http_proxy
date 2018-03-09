@@ -8,3 +8,8 @@
    define("CLIENT_PORT",'80');
 
    define("DEBUG",false);
+
+   define("ALLOW_CACHE_KEYS",array(
+      'api/test/cache',
+      'user/site/get_site_list',
+   ));
