@@ -5,6 +5,8 @@
 
    require_once("/etc/swoole-http-proxy/config.php");
 
+
+
    function now()
    {
       return date("Y-m-d H:i:s");
@@ -272,7 +274,7 @@
       $debug_data['request_url']=$url;
 
 
-      HttpProxyServer::addStatus("visit",1);
+      //HttpProxyServer::addStatus("visit",1);
 
       if($url == "/status")
       {
@@ -297,6 +299,7 @@
          $cache_data=Cache::get($serv->redis,$api);
          if($cache_data)
          {
+            //HttpProxyServer::addStatus("cache_hit",1);
             $resp->end($cache_data);
          }
          else
