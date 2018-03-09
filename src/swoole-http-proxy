@@ -306,7 +306,7 @@
          }
          else
          {
-            $client->get($url, function ($cli) use ($req, $resp,$debug_data) {
+            $client->get($url, function ($cli) use ($serv,$req, $resp,$debug_data) {
 
                $api=$req->get["s"];
                Cache::set($serv->redis,$api,$cli->body);
