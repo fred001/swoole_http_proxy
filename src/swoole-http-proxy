@@ -302,6 +302,7 @@
          {
             $client->get($url, function ($cli) use ($serv,$req, $resp,$debug_data) {
 
+               $cache_key=Cache::getCacheKey($req->server['request_uri'],$req->get);
                Cache::set($serv->redis,$cache_key,$cli->body);
 
                $debug_data['response_code']=$cli->statusCode;
