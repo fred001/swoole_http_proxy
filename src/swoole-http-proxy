@@ -115,9 +115,8 @@
          }
       }
 
-      public static function set($redis,$api,$data)
+      public static function set($redis,$key,$data)
       {
-         $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
          {
             //check if data is valid
@@ -133,11 +132,10 @@
          }
       }
 
-      public static function get($redis,$api)
+      public static function get($redis,$key)
       {
          $redis->hincrby(CACHE_REDIS_KEY,"stat_visited",1);
 
-         $key=self::getCacheKey($api);
          if(self::isAllowCache($key))
          {
             $data=$redis->hget(CACHE_REDIS_KEY,$key);
@@ -151,9 +149,9 @@
          return false;
       }
 
-      public static function getCacheKey($api)
+      public static function getCacheKey($request_uri,$params=array())
       {
-         return $api;
+         return cache_key($request_uri,$params);
       }
 
       public static function showStatus($redis)
@@ -293,8 +291,8 @@
 
       if ($req->server['request_method'] == 'GET')
       {
-         $api=$req->get["s"];
-         $cache_data=Cache::get($serv->redis,$api);
+         $cache_key=Cache::getCacheKey($req->server['request_uri'],$req->get);
+         $cache_data=Cache::get($serv->redis,$cache_key);
          if($cache_data)
          {
             //HttpProxyServer::addStatus("cache_hit",1);
@@ -304,8 +302,7 @@
          {
             $client->get($url, function ($cli) use ($serv,$req, $resp,$debug_data) {
 
-               $api=$req->get["s"];
-               Cache::set($serv->redis,$api,$cli->body);
+               Cache::set($serv->redis,$cache_key,$cli->body);
 
                $debug_data['response_code']=$cli->statusCode;
                $debug_data['response']=$cli->body;
