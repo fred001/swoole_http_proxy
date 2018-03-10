@@ -115,20 +115,23 @@
          }
       }
 
+      public static function isCacheDataValid($key,$data)
+      {
+         if( cache_data_is_valid($key,$data) )
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+
       public static function set($redis,$key,$data)
       {
          if(self::isAllowCache($key))
          {
-            //check if data is valid
-            $origin_data=json_decode($data,true);
-            if(isset($origin_data['error']) && $origin_data['error'] == 0)
-            {
-               $redis->hset(CACHE_REDIS_KEY,$key,$data);
-            }
-            else
-            {
-               debug("[cache set failed] $key is not expect format");
-            }
+            $redis->hset(CACHE_REDIS_KEY,$key,$data);
          }
       }
 
