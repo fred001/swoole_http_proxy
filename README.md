@@ -16,10 +16,13 @@ iamlosing02@gmail.com
 1. git clone REPO
 2. sudo make install
 3. systemctl status swoole-http-proxy
-4. 配置修改: 
-  /etc/swoole-http-proxy/config.php  
-  /etc/swoole-http-proxy/cache.php  
 
+WARNING:  make install will overwrite  config files !
+
+## Config
+/etc/swoole-http-proxy/config.php  
+/etc/swoole-http-proxy/cache.php  
+  
 
 ## ChangeLog
 
